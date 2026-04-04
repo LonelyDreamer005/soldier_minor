@@ -1,0 +1,114 @@
+.alerts-card {}
+
+.alerts-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.alerts-title {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 2px;
+  color: var(--text-secondary);
+}
+
+.alerts-count {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.alerts-clear {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--green);
+  text-align: center;
+  padding: 24px;
+  letter-spacing: 1px;
+}
+
+.alerts-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.alert-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  border-left: 3px solid;
+  background: rgba(0,0,0,0.2);
+  animation: slide-in 0.3s ease;
+}
+
+@keyframes slide-in {
+  from { opacity: 0; transform: translateX(-6px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+.alert-high {
+  border-left-color: var(--red);
+  background: rgba(239,68,68,0.06);
+}
+.alert-low {
+  border-left-color: var(--blue);
+  background: rgba(59,130,246,0.06);
+}
+
+.ai-icon {
+  font-size: 16px;
+  width: 20px;
+  text-align: center;
+  flex-shrink: 0;
+}
+.alert-high .ai-icon { color: var(--red); }
+.alert-low  .ai-icon { color: var(--blue); }
+
+.ai-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.ai-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  color: var(--text-muted);
+}
+
+.ai-msg {
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.ai-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.ai-bpm {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 600;
+}
+.alert-high .ai-bpm { color: var(--red); }
+.alert-low  .ai-bpm { color: var(--blue); }
+
+.ai-time {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-muted);
+}
