@@ -54,5 +54,3 @@ Edit `client/src/data/soldiers.js` and add entries. The backend already accepts 
 | POST | `/bpm` | Receive BPM `{ bpm: number, soldierId?: string }` |
 | GET | `/latest` | Latest reading |
 | GET | `/history` | Last 50 readings |
-
-# soldier_minor
