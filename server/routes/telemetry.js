@@ -22,7 +22,7 @@ router.post(['/telemetry', '/bpm'], (req, res) => {
   const reading = {
     bpm: bpm || (readings.length > 0 ? readings[readings.length - 1].bpm : 70),
     temperature: temperature || (readings.length > 0 ? readings[readings.length - 1].temperature : 36.6),
-    location: location || (readings.length > 0 ? readings[readings.length - 1].location : { lat: 28.6139, lng: 77.2090 }),
+    location: location || (readings.length > 0 ? readings[readings.length - 1].location : { lat: 17.3850, lng: 78.4867 }),
     timestamp: timestamp || new Date().toISOString(),
     soldierId,
   };

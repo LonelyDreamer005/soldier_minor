@@ -1,10 +1,10 @@
 import './LiveStatusCard.css';
 
 const STATUS_MAP = {
-  NORMAL:    { label: 'NORMAL',    icon: '●', cls: 'status-normal', glow: 'glow-green' },
-  HIGH:      { label: 'HIGH',      icon: '▲', cls: 'status-high',   glow: 'glow-red'   },
-  LOW:       { label: 'LOW',       icon: '▼', cls: 'status-low',    glow: 'glow-blue'  },
-  NO_SIGNAL: { label: 'NO SIGNAL', icon: '◌', cls: 'status-none',   glow: 'glow-grey'  },
+  NORMAL: { label: 'NORMAL', icon: '●', cls: 'status-normal', glow: 'glow-green' },
+  HIGH: { label: 'HIGH', icon: '▲', cls: 'status-high', glow: 'glow-red' },
+  LOW: { label: 'LOW', icon: '▼', cls: 'status-low', glow: 'glow-blue' },
+  NO_SIGNAL: { label: 'NO SIGNAL', icon: '◌', cls: 'status-none', glow: 'glow-grey' },
 };
 
 export default function LiveStatusCard({ bpm, temperature, status }) {

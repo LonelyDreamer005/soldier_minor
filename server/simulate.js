@@ -4,9 +4,9 @@ const SERVER_HOST = 'localhost';
 const SERVER_PORT = 5000;
 let tick = 0;
 
-// Starting position: New Delhi
-let lat = 28.6139;
-let lng = 77.2090;
+// Starting position: Hyderabad
+let lat = 17.3850;
+let lng = 78.4867;
 
 function randomBPM() {
   const cycle = Math.floor(tick / 15) % 3;
@@ -35,12 +35,12 @@ function postTelemetry() {
   const bpm = randomBPM();
   const temperature = randomTemp();
   const location = updateLocation();
-  
-  const body = JSON.stringify({ 
-    bpm, 
-    temperature, 
+
+  const body = JSON.stringify({
+    bpm,
+    temperature,
     location,
-    soldierId: 'ALPHA-01' 
+    soldierId: 'ALPHA-01'
   });
 
   const options = {
@@ -67,7 +67,7 @@ function postTelemetry() {
 
   req.write(body);
   req.end();
-  
+
   if (tick % 5 === 0) {
     console.log(`[SIM] Tick ${tick}: BPM=${bpm}, Temp=${temperature}°C, Pos=${lat.toFixed(4)},${lng.toFixed(4)}`);
   }

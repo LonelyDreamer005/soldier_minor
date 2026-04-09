@@ -1,56 +1,51 @@
-# Soldier Health Monitoring System
+# Tactical Biometric Operations Dashboard
 
-Real-time BPM dashboard for ESP32 + DFRobot SEN0203 heart rate sensor.
+A secure, real-time health and location monitoring dashboard tailored for field operatives. Features Google OAuth integration, live BPM & Temperature tracking, and dynamic mapping capabilities.
+
+## Features Added 🚀
+- **Biometric Splitting:** Independent tracking of Heart Rate (BPM) and Body Temperature (°C).
+- **Secure Authentication:** Integrated JWT-based traditional login and Google OAuth via `@react-oauth/google`.
+- **Live Location Mapping:** Real-time marker deployment initializing at Hyderabad coordinates using `react-leaflet`.
+- **Simulated Realism:** Included a standalone mock server (`simulate.js`) that safely feeds organic test data.
 
 ## Quick Start
 
-### 1. Backend
+### 1. Backend Server Setup
+Navigate into the server directory and configure your environment variables first.
 ```bash
 cd server
 npm install
-node index.js          # starts on http://localhost:5000
+# You can update .env with real secrets here
+npm run dev        # Uses nodemon (starts on http://localhost:5000)
 ```
+> **Note:** If you run using `node index.js`, your server won't auto-reload on code changes!
 
-### 2. Frontend
+### 2. Frontend Client Setup
+Keep the backend running, then open an additional terminal:
 ```bash
 cd client
 npm install
-npm run dev            # starts on http://localhost:5173
+npm run dev        # Uses Vite (starts on http://localhost:5173)
 ```
 
-### 3. Mock Simulator (no hardware needed)
+### 3. Running the Simulator 
+Open a third terminal instance. Ensure your backend server is already running, then execute:
 ```bash
 cd server
-node simulate.js       # sends fake BPM readings every 1s
+npm run simulate   # OR node simulate.js
 ```
+*This script sequentially POSTs mock temperature, BPM, and GPS data into your database, acting like an active hardware sensor.*
 
-### 4. ESP32 Hardware
-- Edit `esp32/heart_monitor.ino` — set your WiFi SSID/password and server IP
-- Flash via Arduino IDE with ESP32 board package installed
-- Pin: SEN0203 signal → GPIO 34
-
-## Project Structure
-```
-minor/
-├── server/
-│   ├── index.js          # Express app (port 5000)
-│   ├── simulate.js       # Mock BPM sender
-│   └── routes/bpm.js     # POST /bpm, GET /latest, GET /history
-├── client/
-│   └── src/
-│       ├── components/   # Header, SoldierCard, LiveStatusCard, BPMGraph, AlertsPanel
-│       ├── data/soldiers.js  # ← edit soldier info here
-│       └── App.jsx
-└── esp32/
-    └── heart_monitor.ino
-```
-
-## Adding More Soldiers
-Edit `client/src/data/soldiers.js` and add entries. The backend already accepts `soldierId` in POST body.
+### 4. Logging In
+- With your database functional, navigate to your client URL (`http://localhost:5173`).
+- **Initial Override:** Use Username: `admin` and Password: `admin`. The database securely generates and hashes this profile automatically upon initialization.
+- **Google OAuth:** Configure your unique Client ID inside `client/.env` (`VITE_GOOGLE_CLIENT_ID`) to activate 1-click Google integrations.
 
 ## API Reference
 | Method | Route | Description |
 |---|---|---|
-| POST | `/bpm` | Receive BPM `{ bpm: number, soldierId?: string }` |
-| GET | `/latest` | Latest reading |
-| GET | `/history` | Last 50 readings |
+| POST | `/api/auth/login` | Securely validates traditional JWT logins. |
+| POST | `/api/auth/google` | Consumes tokens for third-party Oauth access. |
+| POST | `/api/telemetry` | Primary ingest pipeline for ESP32 metrics. |
+| GET | `/api/latest` | Returns solitary real-time reading snapshot. |
+| GET | `/api/history` | Fetches historical timeline (up to 50 ticks) for graphs. |

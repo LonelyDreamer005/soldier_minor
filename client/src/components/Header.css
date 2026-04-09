@@ -101,3 +101,23 @@
   .header-sub { display: none; }
   .site-header { padding: 14px 16px; }
 }
+
+.header-logout-btn {
+  background: transparent;
+  border: 1px solid var(--red);
+  color: var(--red);
+  font-family: var(--font-title);
+  font-size: 10px;
+  letter-spacing: 1px;
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  margin-top: 8px;
+  transition: all 0.3s;
+}
+
+.header-logout-btn:hover {
+  background: var(--red-glow);
+  color: #fff;
+  box-shadow: 0 0 10px var(--red-glow);
+}

@@ -24,7 +24,7 @@ function ChangeView({ center }) {
 }
 
 export default function SoldierMap({ location, soldierName }) {
-  const position = location ? [location.lat, location.lng] : [28.6139, 77.2090];
+  const position = location ? [location.lat, location.lng] : [17.3850, 78.4867];
 
   return (
     <div className="map-card card">
@@ -35,16 +35,16 @@ export default function SoldierMap({ location, soldierName }) {
         </span>
       </div>
       <div className="map-container-wrapper">
-        <MapContainer 
-          center={position} 
-          zoom={15} 
+        <MapContainer
+          center={position}
+          zoom={15}
           scrollWheelZoom={false}
           style={{ height: '300px', width: '100%', borderRadius: '8px', zIndex: 0 }}
         >
           <TileLayer
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            // Using a dark themed map would be better for premium look
+          // Using a dark themed map would be better for premium look
           />
           <ChangeView center={position} />
           <Marker position={position}>
