@@ -1,10 +1,10 @@
 # Soldier Health Monitoring System
 
-A secure, real-time health and location monitoring dashboard tailored for field operatives. Features Google OAuth integration, live BPM & Temperature tracking, and dynamic mapping capabilities.
+A secure, real-time health and location monitoring dashboard tailored for field operatives. Features live BPM & Temperature tracking and dynamic mapping capabilities.
 
 ## Features Added 🚀
 - **Biometric Splitting:** Independent tracking of Heart Rate (BPM) and Body Temperature (°C).
-- **Secure Authentication:** Integrated JWT-based traditional login and Google OAuth via `@react-oauth/google`.
+- **Secure Authentication:** Integrated JWT-based traditional login system.
 - **Live Location Mapping:** Real-time marker deployment initializing at Hyderabad coordinates using `react-leaflet`.
 - **Simulated Realism:** Included a standalone mock server (`simulate.js`) that safely feeds organic test data.
 
@@ -39,13 +39,12 @@ npm run simulate   # OR node simulate.js
 ### 4. Logging In
 - With your database functional, navigate to your client URL (`http://localhost:5173`).
 - **Initial Override:** Use Username: `admin` and Password: `admin`. The database securely generates and hashes this profile automatically upon initialization.
-- **Google OAuth:** Configure your unique Client ID inside `client/.env` (`VITE_GOOGLE_CLIENT_ID`) to activate 1-click Google integrations.
 
 ## API Reference
 | Method | Route | Description |
 |---|---|---|
 | POST | `/api/auth/login` | Securely validates traditional JWT logins. |
-| POST | `/api/auth/google` | Consumes tokens for third-party Oauth access. |
+
 | POST | `/api/telemetry` | Primary ingest pipeline for ESP32 metrics. |
 | GET | `/api/latest` | Returns solitary real-time reading snapshot. |
 | GET | `/api/history` | Fetches historical timeline (up to 50 ticks) for graphs. |

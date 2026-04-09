@@ -8,12 +8,7 @@ const userSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    required: false // Not required for OAuth users
-  },
-  googleId: {
-    type: String,
-    unique: true,
-    sparse: true
+    required: true
   }
 }, { timestamps: true });
 

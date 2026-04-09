@@ -40,41 +40,6 @@ router.post('/login', async (req, res) => {
   }
 });
 
-// Google OAuth Login
-router.post('/google', async (req, res) => {
-  try {
-    const { token } = req.body;
-    // In a real app we would verify this token with Google Auth Library
-    // const ticket = await client.verifyIdToken({ idToken: token, audience: CLIENT_ID });
-    // const payload = ticket.getPayload();
-    // For simplicity without setting up real credentials, we will just decode it
-    
-    const payload = jwt.decode(token);
-    if (!payload || !payload.email) {
-      return res.status(400).json({ error: 'Invalid Google token' });
-    }
 
-    const email = payload.email;
-    const googleId = payload.sub;
-
-    let user = await User.findOne({ googleId });
-    if (!user) {
-      // Check if user exists by email
-      user = await User.findOne({ username: email });
-      if (user) {
-        user.googleId = googleId;
-        await user.save();
-      } else {
-        user = await User.create({ username: email, googleId });
-      }
-    }
-
-    const jwtToken = jwt.sign({ id: user._id, username: user.username }, JWT_SECRET, { expiresIn: '1d' });
-    res.json({ success: true, token: jwtToken });
-  } catch (error) {
-    console.error('Google login error:', error);
-    res.status(500).json({ error: 'Server error' });
-  }
-});
 
 module.exports = router;

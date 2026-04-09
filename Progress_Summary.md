@@ -56,7 +56,7 @@ Here is a comprehensive summary of all the tasks completed so far to build the I
 
 ## 11. Phase 3: Security & UI Refinement
 - **Authentication & Access Control**:
-  - Implemented dual-mode authentication: Traditional Username/Password and Google OAuth integration.
+  - Implemented secure JWT-based authentication for traditional Username/Password login.
   - Secured the dashboard using JWT-based session management and React Router protected routes.
   - Connected the backend to MongoDB (Mongoose) for persistent user storage and credential management (with bcrypt hashing).
 - **Dashboard UI Optimization**:
@@ -69,7 +69,7 @@ Here is a comprehensive summary of all the tasks completed so far to build the I
 
 ## 12. Current Project State
 The project has reached **Phase 3 Maturity**:
-1. **Authenticated Access**: Users must log in via credentials or Google to access the dashboard.
+1. **Authenticated Access**: Users must log in via credentials to access the dashboard.
 2. **Modular Telemetry**: Heart rate, temperature, and GPS are tracked via independent, high-performance components.
 3. **Database Integration**: User profiles and telemetry (transitioning) are managed via MongoDB.
 4. **Ready for Hardware**: The system is fully prepared to switch from simulation to real ESP32 sensor data with minimal configuration.
