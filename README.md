@@ -1,4 +1,4 @@
-# Tactical Biometric Operations Dashboard
+# Soldier Health Monitoring System
 
 A secure, real-time health and location monitoring dashboard tailored for field operatives. Features Google OAuth integration, live BPM & Temperature tracking, and dynamic mapping capabilities.
 
