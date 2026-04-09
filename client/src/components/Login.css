@@ -77,26 +77,6 @@
   box-shadow: 0 0 20px var(--blue-glow);
 }
 
-.login-divider {
-  display: flex;
-  align-items: center;
-  margin: 30px 0;
-}
-
-.login-divider::before,
-.login-divider::after {
-  content: '';
-  flex: 1;
-  border-bottom: 1px solid var(--border);
-}
-
-.login-divider span {
-  font-family: var(--font-mono);
-  color: var(--text-muted);
-  padding: 0 10px;
-  font-size: 12px;
-}
-
 .login-error {
   background: rgba(239, 68, 68, 0.1);
   border: 1px solid var(--red);
@@ -107,9 +87,4 @@
   font-family: var(--font-mono);
   font-size: 12px;
   text-align: center;
-}
-
-.google-login-wrap {
-  display: flex;
-  justify-content: center;
 }
