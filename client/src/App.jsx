@@ -3,6 +3,7 @@ import Header from './components/Header';
 import SoldierCard from './components/SoldierCard';
 import LiveStatusCard from './components/LiveStatusCard';
 import BPMGraph from './components/BPMGraph';
+import SoldierMap from './components/SoldierMap';
 import AlertsPanel from './components/AlertsPanel';
 import soldiers from './data/soldiers';
 import './App.css';
@@ -30,6 +31,8 @@ function buildAlert(bpm, status, timestamp) {
 
 export default function App() {
   const [latestBpm, setLatestBpm]   = useState(null);
+  const [temperature, setTemperature] = useState(null);
+  const [location, setLocation]     = useState(null);
   const [history, setHistory]       = useState([]);
   const [alerts, setAlerts]         = useState([]);
   const [status, setStatus]         = useState('NO_SIGNAL');
@@ -42,16 +45,18 @@ export default function App() {
   useEffect(() => {
     async function fetchLatest() {
       try {
-        const res = await fetch('/latest');
+        const res = await fetch('http://localhost:5000/api/latest');
         if (!res.ok) throw new Error('bad response');
         const json = await res.json();
         failCountRef.current = 0;
         setConnLost(false);
 
         if (json.data) {
-          const { bpm, timestamp } = json.data;
+          const { bpm, temperature, location, timestamp } = json.data;
           lastSeenRef.current = new Date(timestamp).getTime();
           setLatestBpm(bpm);
+          setTemperature(temperature);
+          setLocation(location);
         }
       } catch {
         failCountRef.current += 1;
@@ -61,7 +66,7 @@ export default function App() {
 
     async function fetchHistory() {
       try {
-        const res = await fetch('/history');
+        const res = await fetch('http://localhost:5000/api/history');
         if (!res.ok) return;
         const json = await res.json();
         setHistory(json.data || []);
@@ -99,10 +104,14 @@ export default function App() {
 
         <div className="top-grid">
           <SoldierCard soldier={SOLDIER} />
-          <LiveStatusCard bpm={latestBpm} status={status} />
+          <LiveStatusCard bpm={latestBpm} temperature={temperature} status={status} />
         </div>
 
-        <BPMGraph history={history} status={status} />
+        <div className="telemetry-grid">
+          <BPMGraph history={history} status={status} />
+          <SoldierMap location={location} soldierName={SOLDIER.name} />
+        </div>
+        
         <AlertsPanel alerts={alerts} />
       </main>
     </div>

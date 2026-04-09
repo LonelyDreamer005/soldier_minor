@@ -42,8 +42,20 @@ Here is a comprehensive summary of all the tasks completed so far to build the I
 - **Easy Team Handoff**: The team currently in possession of the physical IoT device (running basic Arduino and Python analysis scripts) **does not need to alter their core logic at all.**
 - **Single Integration Step**: All they need to do is add a standard `HTTP POST` request to their existing Arduino or Python code to send the finalized BPM number to `http://<backend-ip>:5000/bpm` using the simple JSON payload structure: `{"bpm": 75, "soldierId": "ALPHA-01"}`.
 
-## 8. Current Project State
-The project is completely built, documented (in `README.md`), and currently **LIVE AND RUNNING**:
-1. The Express backend is running on port `5000`.
-2. The Node simulator process is generating data for it.
-3. The Vite frontend is running on port `5173` rendering the live data on a browser.
+## 9. Phase 2: Multi-Parameter Expansion (GPS & Temperature)
+- **Telemetry System Upgrade**: Expanded the data schema to include `temperature` (Body/Environment) and `location` (Live latitude/longitude GPS data).
+- **Backend Refactoring (`server/routes/telemetry.js`)**:
+  - Replaced the single-param BPM route with a unified `/api/telemetry` endpoint.
+  - Implemented backward compatibility for the original `/bpm` route.
+- **Advanced Simulation**: Updated the simulator to generate realistic GPS walking paths (starting in New Delhi) and fluctuating body temperatures (fever/exertion simulation).
+- **Frontend Live Dashboard Expansion**:
+  - **Map Integration**: Added a high-performance Leaflet-based Map component that displays the soldier's position in real-time with automatic centering and marker tracking.
+  - **Biometrics Grid**: Redesigned the `LiveStatusCard` to show both BPM and Temperature in a clean, high-tech grid.
+  - **Dynamic Theming**: Added "Tactical Dark" styling to the map using CSS filters to match the military aesthetic.
+- **Vite Proxy Update**: Configured the client to point to the new `/api` routes on the backend.
+
+## 10. Current Project State
+The project has been successfully upgraded to Phase 2:
+1. **Express Backend**: Listening on port `5000` with the new `/api/telemetry` routes.
+2. **Advanced Simulator**: Generating multi-parameter data (BPM, Temp, GPS).
+3. **Optimized Frontend**: Rendering the unified dashboard on port `5173` with real-time map tracking.

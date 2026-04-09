@@ -1,27 +1,52 @@
-// simulate.js — sends fake BPM readings to the server every 1 second
-// Usage: node simulate.js
 const http = require('http');
 
 const SERVER_HOST = 'localhost';
 const SERVER_PORT = 5000;
 let tick = 0;
 
+// Starting position: New Delhi
+let lat = 28.6139;
+let lng = 77.2090;
+
 function randomBPM() {
-  // Cycle through normal, high, and low zones for demo purposes
   const cycle = Math.floor(tick / 15) % 3;
-  if (cycle === 0) return Math.floor(Math.random() * 30) + 60;   // 60–90 NORMAL
-  if (cycle === 1) return Math.floor(Math.random() * 30) + 101;  // 101–130 HIGH
-  return Math.floor(Math.random() * 15) + 35;                    // 35–50 LOW
+  if (cycle === 0) return Math.floor(Math.random() * 20) + 70;   // 70–90 NORMAL
+  if (cycle === 1) return Math.floor(Math.random() * 30) + 110;  // 110–140 HIGH
+  return Math.floor(Math.random() * 15) + 45;                    // 45–60 LOW
 }
 
-function postBPM() {
+function randomTemp() {
+  // Normal body temp is 36.5–37.5
+  // Simulate slight increase during "high BPM" cycle
+  const cycle = Math.floor(tick / 15) % 3;
+  let base = 36.6;
+  if (cycle === 1) base = 38.2; // Fever/Exertion
+  return parseFloat((base + (Math.random() * 0.5)).toFixed(1));
+}
+
+function updateLocation() {
+  // Simulate slow movement (roughly walking speed)
+  lat += (Math.random() - 0.5) * 0.0005;
+  lng += (Math.random() - 0.5) * 0.0005;
+  return { lat, lng };
+}
+
+function postTelemetry() {
   const bpm = randomBPM();
-  const body = JSON.stringify({ bpm, soldierId: 'ALPHA-01' });
+  const temperature = randomTemp();
+  const location = updateLocation();
+  
+  const body = JSON.stringify({ 
+    bpm, 
+    temperature, 
+    location,
+    soldierId: 'ALPHA-01' 
+  });
 
   const options = {
     hostname: SERVER_HOST,
     port: SERVER_PORT,
-    path: '/bpm',
+    path: '/api/telemetry',
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -30,7 +55,10 @@ function postBPM() {
   };
 
   const req = http.request(options, (res) => {
-    process.stdout.write(`[SIM] BPM=${bpm} → ${res.statusCode}\n`);
+    // Silent success, only log errors or state changes
+    if (res.statusCode !== 200) {
+      console.error(`[SIM] Failed to post: ${res.statusCode}`);
+    }
   });
 
   req.on('error', (e) => {
@@ -39,9 +67,13 @@ function postBPM() {
 
   req.write(body);
   req.end();
+  
+  if (tick % 5 === 0) {
+    console.log(`[SIM] Tick ${tick}: BPM=${bpm}, Temp=${temperature}°C, Pos=${lat.toFixed(4)},${lng.toFixed(4)}`);
+  }
   tick++;
 }
 
-console.log('[SIM] Simulator started. Sending BPM every 1s...');
-postBPM();
-setInterval(postBPM, 1000);
+console.log('[SIM] Advanced Telemetry Simulator started...');
+postTelemetry();
+setInterval(postTelemetry, 1000);

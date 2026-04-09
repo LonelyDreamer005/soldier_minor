@@ -36,36 +36,40 @@
   background: rgba(0,0,0,0.3);
 }
 
-.lc-bpm-wrap {
-  display: flex;
-  align-items: baseline;
-  gap: 12px;
-  justify-content: center;
-  padding: 10px 0;
+.lc-biometry-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  align-items: center;
 }
 
-.lc-bpm {
+.lc-bpm-wrap, .lc-temp-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.lc-bpm, .lc-temp {
   font-family: var(--font-mono);
-  font-size: clamp(72px, 12vw, 120px);
+  font-size: 72px;
   font-weight: 400;
   line-height: 1;
   letter-spacing: -2px;
   transition: color 0.4s, text-shadow 0.4s;
 }
 
-.status-normal .lc-bpm,
-.lc-bpm.status-normal { text-shadow: 0 0 30px var(--green-glow); }
-.lc-bpm.status-high   { text-shadow: 0 0 30px var(--red-glow); }
-.lc-bpm.status-low    { text-shadow: 0 0 30px var(--blue-glow); }
-.lc-bpm.status-none   { text-shadow: none; }
+.lc-temp {
+  color: var(--amber);
+  text-shadow: 0 0 20px var(--amber-glow);
+}
 
-.lc-bpm-unit {
+.lc-bpm-unit, .lc-temp-unit {
   font-family: var(--font-mono);
-  font-size: 20px;
+  font-size: 14px;
   color: var(--text-muted);
-  letter-spacing: 3px;
-  align-self: flex-end;
-  margin-bottom: 12px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
 }
 
 .lc-footer { border-top: 1px solid var(--border); padding-top: 12px; }

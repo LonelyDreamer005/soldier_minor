@@ -7,7 +7,7 @@ const STATUS_MAP = {
   NO_SIGNAL: { label: 'NO SIGNAL', icon: '◌', cls: 'status-none',   glow: 'glow-grey'  },
 };
 
-export default function LiveStatusCard({ bpm, status }) {
+export default function LiveStatusCard({ bpm, temperature, status }) {
   const s = STATUS_MAP[status] || STATUS_MAP.NO_SIGNAL;
 
   return (
@@ -17,11 +17,20 @@ export default function LiveStatusCard({ bpm, status }) {
         <span className={`lc-badge ${s.cls}`}>{s.icon} {s.label}</span>
       </div>
 
-      <div className="lc-bpm-wrap">
-        <div className={`lc-bpm ${s.cls}`}>
-          {bpm !== null ? bpm : '--'}
+      <div className="lc-biometry-grid">
+        <div className="lc-bpm-wrap">
+          <div className={`lc-bpm ${s.cls}`}>
+            {bpm !== null ? bpm : '--'}
+          </div>
+          <div className="lc-bpm-unit">BPM</div>
         </div>
-        <div className="lc-bpm-unit">BPM</div>
+
+        <div className="lc-temp-wrap">
+          <div className="lc-temp">
+            {temperature !== null ? temperature : '--'}
+          </div>
+          <div className="lc-temp-unit">°C</div>
+        </div>
       </div>
 
       <div className="lc-footer">
