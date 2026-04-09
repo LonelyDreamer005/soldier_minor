@@ -148,6 +148,94 @@ body {
   overflow: hidden;
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
+  height: 300px;
+  transition: height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.map-card {
+  position: relative;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+}
+
+.map-card:not(.is-expanded):hover {
+  border-color: var(--blue);
+  box-shadow: 0 0 20px var(--blue-glow);
+  transform: translateY(-2px);
+}
+
+.map-card.is-expanded {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90vw;
+  height: 90vh;
+  z-index: 9999;
+  cursor: default;
+  display: flex;
+  flex-direction: column;
+}
+
+.map-card.is-expanded .map-container-wrapper {
+  flex: 1;
+  height: auto;
+}
+
+/* Modal Overlay backdrop simulation */
+.map-card.is-expanded::after {
+  content: '';
+  position: fixed;
+  inset: -100vw;
+  background: rgba(0, 0, 0, 0.8);
+  z-index: -1;
+  pointer-events: none;
+}
+
+.card-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.map-close-btn {
+  background: var(--red-dim);
+  border: 1px solid var(--red);
+  color: #fff;
+  font-family: var(--font-title);
+  font-size: 11px;
+  padding: 4px 12px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.map-close-btn:hover {
+  background: var(--red);
+  box-shadow: 0 0 10px var(--red-glow);
+}
+
+.map-expand-hint {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: rgba(15, 22, 35, 0.8);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  opacity: 0;
+  transition: opacity 0.3s, transform 0.3s;
+  pointer-events: none;
+  z-index: 10;
+  letter-spacing: 1px;
+}
+
+.map-card:not(.is-expanded):hover .map-expand-hint {
+  opacity: 1;
+  transform: translateY(-5px);
 }
 
 /* Override Leaflet dark mode (simulated) */
