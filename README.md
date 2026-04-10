@@ -44,7 +44,6 @@ npm run simulate   # OR node simulate.js
 | Method | Route | Description |
 |---|---|---|
 | POST | `/api/auth/login` | Securely validates traditional JWT logins. |
-
 | POST | `/api/telemetry` | Primary ingest pipeline for ESP32 metrics. |
 | GET | `/api/latest` | Returns solitary real-time reading snapshot. |
 | GET | `/api/history` | Fetches historical timeline (up to 50 ticks) for graphs. |
