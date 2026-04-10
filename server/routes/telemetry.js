@@ -1,11 +1,11 @@
 const express = require('express');
 const router = express.Router();
+const Telemetry = require('../models/Telemetry');
 
 const MAX_HISTORY = 50;
-const readings = []; // { bpm, temperature, location: { lat, lng }, timestamp, soldierId }
 
 // POST /telemetry — receive from ESP32 or simulator
-router.post(['/telemetry', '/bpm'], (req, res) => {
+router.post(['/telemetry', '/bpm'], async (req, res) => {
   const { bpm, temperature, location, timestamp, soldierId = 'ALPHA-01' } = req.body;
 
   // Validation
@@ -19,32 +19,54 @@ router.post(['/telemetry', '/bpm'], (req, res) => {
     return res.status(400).json({ error: 'Invalid Location' });
   }
 
-  const reading = {
-    bpm: bpm || (readings.length > 0 ? readings[readings.length - 1].bpm : 70),
-    temperature: temperature || (readings.length > 0 ? readings[readings.length - 1].temperature : 36.6),
-    location: location || (readings.length > 0 ? readings[readings.length - 1].location : { lat: 17.3850, lng: 78.4867 }),
-    timestamp: timestamp || new Date().toISOString(),
-    soldierId,
-  };
+  try {
+    const reading = new Telemetry({
+      bpm: bpm || 70,
+      temperature: temperature || 36.6,
+      location: location || { lat: 17.3850, lng: 78.4867 },
+      timestamp: timestamp || new Date(),
+      soldierId,
+    });
 
-  readings.push(reading);
-  if (readings.length > MAX_HISTORY) readings.shift();
+    await reading.save();
 
-  console.log(`[TELEMETRY] ${reading.soldierId} updated at ${reading.timestamp}`);
-  return res.status(200).json({ success: true, reading });
+    // Emit real-time update via Socket.io
+    if (req.io) {
+      req.io.emit('telemetryUpdate', reading);
+    }
+
+    console.log(`[TELEMETRY] ${reading.soldierId} stored and emitted at ${reading.timestamp}`);
+    return res.status(200).json({ success: true, reading });
+  } catch (error) {
+    console.error('[TELEMETRY] Save Error:', error);
+    return res.status(500).json({ error: 'Failed to save telemetry' });
+  }
 });
 
 // GET /latest — return most recent reading
-router.get('/latest', (req, res) => {
-  if (readings.length === 0) {
-    return res.status(200).json({ data: null });
+router.get('/latest', async (req, res) => {
+  const { soldierId = 'ALPHA-01' } = req.query;
+  try {
+    const latest = await Telemetry.findOne({ soldierId }).sort({ timestamp: -1 });
+    return res.status(200).json({ data: latest });
+  } catch (error) {
+    return res.status(500).json({ error: 'Failed to fetch latest data' });
   }
-  return res.status(200).json({ data: readings[readings.length - 1] });
 });
 
 // GET /history — return last 50 readings
-router.get('/history', (req, res) => {
-  return res.status(200).json({ data: readings });
+router.get('/history', async (req, res) => {
+  const { soldierId = 'ALPHA-01' } = req.query;
+  try {
+    const history = await Telemetry.find({ soldierId })
+      .sort({ timestamp: -1 })
+      .limit(MAX_HISTORY);
+    // Return in chronological order
+    return res.status(200).json({ data: history.reverse() });
+  } catch (error) {
+    return res.status(500).json({ error: 'Failed to fetch history' });
+  }
 });
 
 module.exports = router;
+

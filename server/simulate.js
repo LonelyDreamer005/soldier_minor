@@ -5,8 +5,8 @@ const SERVER_PORT = 5000;
 let tick = 0;
 
 // Starting position: Hyderabad
-let lat = 17.3850;
-let lng = 78.4867;
+let lat = 17.5388;
+let lng = 78.3854;
 
 function randomBPM() {
   const cycle = Math.floor(tick / 15) % 3;

@@ -1,9 +1,6 @@
 /*
- * ESP32 + DFRobot SEN0203 Heart Rate Sensor
- * Sends BPM via HTTP POST to Node.js server every 1 second
- *
- * Board: ESP32 Dev Module
- * Libraries: WiFi.h (built-in), HTTPClient.h (built-in)
+ * ESP32 Soldier Health Monitor — Hardware Pipeline
+ * Sends BPM, Temperature, and Location via HTTP POST to Node.js backend
  */
 
 #include <WiFi.h>
@@ -12,82 +9,97 @@
 // ── CONFIG ─────────────────────────────────────────────────────
 const char* SSID       = "YOUR_WIFI_SSID";
 const char* PASSWORD   = "YOUR_WIFI_PASSWORD";
-const char* SERVER_URL = "http://192.168.1.XXX:5000/bpm"; // ← your PC's local IP
+// Use your computer's local IP address (find with ipconfig)
+const char* SERVER_URL = "http://192.168.1.XXX:5000/api/telemetry"; 
 const char* SOLDIER_ID = "ALPHA-01";
 
-// SEN0203 wiring: signal pin → GPIO 34 (analog input)
-const int SENSOR_PIN = 34;
+const int HEART_PIN = 34; // Analog input for heart rate sensor
+const int TEMP_PIN  = 35; // Analog input for temperature sensor (e.g., LM35)
 
 // ── SETUP ──────────────────────────────────────────────────────
 void setup() {
   Serial.begin(115200);
-  delay(500);
+  delay(1000);
 
-  Serial.print("Connecting to WiFi");
+  connectToWiFi();
+}
+
+void connectToWiFi() {
+  Serial.print("\nConnecting to WiFi: ");
+  Serial.println(SSID);
+  
   WiFi.begin(SSID, PASSWORD);
-  while (WiFi.status() != WL_CONNECTED) {
+  
+  int attempts = 0;
+  while (WiFi.status() != WL_CONNECTED && attempts < 20) {
     delay(500);
     Serial.print(".");
+    attempts++;
   }
-  Serial.println();
-  Serial.print("Connected! IP: ");
-  Serial.println(WiFi.localIP());
+
+  if (WiFi.status() == WL_CONNECTED) {
+    Serial.println("\n[WIFI] Connected!");
+    Serial.print("[WIFI] IP: ");
+    Serial.println(WiFi.localIP());
+  } else {
+    Serial.println("\n[WIFI] Connection Failed. Re-trying...");
+  }
 }
 
 // ── LOOP ───────────────────────────────────────────────────────
 void loop() {
-  int bpm = readHeartRate();
-
-  if (bpm >= 30 && bpm <= 200) {
-    sendBPM(bpm);
-  } else {
-    Serial.println("[WARN] Invalid BPM reading, skipping.");
-  }
-
-  delay(1000);
-}
-
-// ── Read BPM from SEN0203 ──────────────────────────────────────
-// SEN0203 outputs an analog voltage proportional to BPM.
-// Calibrate MIN_VAL / MAX_VAL to your sensor's actual output range.
-int readHeartRate() {
-  const int SAMPLES   = 10;
-  const int MIN_VAL   = 500;   // ADC value at ~30 BPM — calibrate this
-  const int MAX_VAL   = 3500;  // ADC value at ~200 BPM — calibrate this
-
-  long total = 0;
-  for (int i = 0; i < SAMPLES; i++) {
-    total += analogRead(SENSOR_PIN);
-    delay(10);
-  }
-  int avg = total / SAMPLES;
-  int bpm = map(avg, MIN_VAL, MAX_VAL, 30, 200);
-  bpm = constrain(bpm, 30, 200);
-
-  Serial.print("[SENSOR] ADC avg="); Serial.print(avg);
-  Serial.print("  BPM="); Serial.println(bpm);
-  return bpm;
-}
-
-// ── HTTP POST ──────────────────────────────────────────────────
-void sendBPM(int bpm) {
   if (WiFi.status() != WL_CONNECTED) {
-    Serial.println("[HTTP] WiFi disconnected, skipping.");
+    connectToWiFi();
     return;
   }
 
+  int bpm         = readBPM();
+  float temp      = readTemp();
+  double lat      = 17.3850 + (random(-100, 100) / 10000.0); // Simulated GPS jitter
+  double lng      = 78.4867 + (random(-100, 100) / 10000.0);
+
+  sendTelemetry(bpm, temp, lat, lng);
+
+  delay(2000); // Send every 2 seconds to avoid flooding
+}
+
+// ── SENSOR READS ───────────────────────────────────────────────
+int readBPM() {
+  // Replace with actual SEN0203 logic if calibrated
+  int raw = analogRead(HEART_PIN);
+  return map(raw, 0, 4095, 60, 120); 
+}
+
+float readTemp() {
+  int raw = analogRead(TEMP_PIN);
+  // Example for LM35: (raw * 3.3 / 4095) * 100
+  return (raw * 3.3 / 4095.0) * 100.0;
+}
+
+// ── DATA DISPATCH ─────────────────────────────────────────────
+void sendTelemetry(int bpm, float temp, double lat, double lng) {
   HTTPClient http;
   http.begin(SERVER_URL);
   http.addHeader("Content-Type", "application/json");
 
-  String payload = "{\"bpm\":" + String(bpm) + ",\"soldierId\":\"" + SOLDIER_ID + "\"}";
-  int code = http.POST(payload);
+  // Construct JSON payload
+  String payload = "{";
+  payload += "\"soldierId\":\"" + String(SOLDIER_ID) + "\",";
+  payload += "\"bpm\":" + String(bpm) + ",";
+  payload += "\"temperature\":" + String(temp, 1) + ",";
+  payload += "\"location\":{\"lat\":" + String(lat, 6) + ",\"lng\":" + String(lng, 6) + "}";
+  payload += "}";
 
-  if (code > 0) {
-    Serial.print("[HTTP] POST → "); Serial.println(code);
+  Serial.println("[HTTP] Sending: " + payload);
+  
+  int httpCode = http.POST(payload);
+
+  if (httpCode > 0) {
+    Serial.printf("[HTTP] POST Response: %d\n", httpCode);
   } else {
-    Serial.print("[HTTP] Error: "); Serial.println(http.errorToString(code));
+    Serial.printf("[HTTP] POST Error: %s\n", http.errorToString(httpCode).c_str());
   }
 
   http.end();
 }
+
