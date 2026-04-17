@@ -1,0 +1,13 @@
+{
+  "name": "soldier-minor",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "concurrently \"npm run start --prefix server\" \"npm run dev --prefix client\"",
+    "dev": "concurrently \"npm run dev --prefix server\" \"npm run dev --prefix client\"",
+    "dev:sim": "concurrently \"npm run dev --prefix server\" \"npm run dev --prefix client\" \"npm run simulate --prefix server\"",
+    "install-all": "npm install && npm install --prefix server && npm install --prefix client"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

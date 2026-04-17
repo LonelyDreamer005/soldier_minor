@@ -10,31 +10,25 @@ A secure, real-time health and location monitoring dashboard tailored for field 
 
 ## Quick Start
 
-### 1. Backend Server Setup
-Navigate into the server directory and configure your environment variables first.
-```bash
-cd server
-npm install
-# You can update .env with real secrets here
-npm run dev        # Uses nodemon (starts on http://localhost:5000)
-```
-> **Note:** If you run using `node index.js`, your server won't auto-reload on code changes!
+We use `concurrently` to execute the client, server, and simulate scripts simultaneously from a single root terminal window.
 
-### 2. Frontend Client Setup
-Keep the backend running, then open an additional terminal:
+### 1. Install Dependencies
+Open a terminal in the root directory and install all required packages at once:
 ```bash
-cd client
-npm install
-npm run dev        # Uses Vite (starts on http://localhost:5173)
+npm run install-all
 ```
+*(This command automatically installs dependencies for the root, `/client`, and `/server` folders. Be sure to configure your environment variables in `server/.env` if you haven't already).*
 
-### 3. Running the Simulator 
-Open a third terminal instance. Ensure your backend server is already running, then execute:
+### 2. Run the Application
+Start the full stack, including the frontend, backend, and simulated sensor data, using one simple command:
 ```bash
-cd server
-npm run simulate   # OR node simulate.js
+npm run dev:sim
 ```
-*This script sequentially POSTs mock temperature, BPM, and GPS data into your database, acting like an active hardware sensor.*
+*   **Frontend**: Starts on `http://localhost:5173`
+*   **Backend**: Starts on `http://localhost:5000`
+*   **Simulator**: Starts sequentially POSTing mock temperature, BPM, and GPS data to act like an active hardware sensor.
+
+*(If you want to start the client and server without the simulator running, you can run `npm run dev` instead).*
 
 ### 4. Logging In
 - With your database functional, navigate to your client URL (`http://localhost:5173`).
